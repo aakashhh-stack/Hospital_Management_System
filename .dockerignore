@@ -1,0 +1,18 @@
+# Dependencies (Docker installs these during build)
+**/node_modules
+node_modules
+
+# Environment & Secrets
+**/.env
+.env
+
+# Git & Local Configs
+.git
+.gitignore
+.dockerignore
+**/.vscode
+
+# Logs & Build Artifacts
+**/npm-debug.log
+**/dist
+**/build

@@ -1,0 +1,32 @@
+# Dependencies (Ignores node_modules in root or subfolders)
+**/node_modules/
+node_modules/
+
+# Environment Variables & Secrets
+**/.env
+**/.env.local
+**/.env.*.local
+.env
+
+
+# Build & Production Outputs
+**/dist/
+**/build/
+**/out/
+
+# Logs & Debugging
+**/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor & System Files
+.DS_Store
+Thumbs.db
+**/.vscode/
+**/.idea/
+
+# Database / Local Storage local dumps
+*.sqlite
+*.db
