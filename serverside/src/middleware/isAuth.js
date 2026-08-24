@@ -20,7 +20,7 @@ function isAuth(req, res, next) {
             return res.status(401).json({
                 message: 'Invalid authorization format',
                 success: false
-            })
+            });
 
         }
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
