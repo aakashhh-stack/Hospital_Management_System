@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
-import bcrypt from 'bcrypt';
+import { hashedPassword } from '../utils/passwordHash.js';
+
 
 const patientSchema = mongoose.Schema({
     name: {
@@ -28,13 +29,13 @@ const patientSchema = mongoose.Schema({
         match: [/^[0-9]{10}$/, 'Phone number must contain exactly 10 digits']
     },
     isActive: {
-        type:Boolean,
+        type: Boolean,
         default: true
     },
-    isDeleted:{
-       type:Boolean,
-       default:false
-    } ,
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
 
 }, { timestamps: true });
 
@@ -47,10 +48,10 @@ patientSchema.pre('save', async function () {
     if (!this.isModified('password')) return
 
     try {
-        this.password = await bcrypt.hash(this.password, 10);
+        this.password = await hashedPassword(this.password);
 
     } catch (err) {
-        console.log('Mongoose middleware error:', err)
+        console.log('Mongoose middleware error:', err);
         throw err;
     }
 })
