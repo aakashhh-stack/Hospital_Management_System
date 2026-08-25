@@ -52,14 +52,13 @@ export const loginUser = async (req, res) => {
         const isUser = await Patient.findOne(
             {
                 email,
-                isActive: false,
                 isDeleted: { $ne: true }
             });
 
         if (!isUser) {
             return res.status(401).json(
                 {
-                    message: 'Invalid credentials or Deleted User',
+                    message: 'Invalid credentials or Deleted User ',
                     success: false
                 }
             );
