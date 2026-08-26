@@ -227,6 +227,30 @@ export const deleteDoctor = async (req, res) => {
 export const getDoctorProfile = async (req, res) => {
     try {
 
+        const isDoctorExists = await Doctor.findOne(
+            {
+                _id: req.user.id,
+                isDeleted: false,
+                isActive: true
+            }).select("-password -__v -role -isDeleted");
+
+        if (!isDoctorExists) {
+            return res.status(404).json(
+                {
+                    message: 'Doctor not found',
+                    success: false
+                }
+            );
+        }
+
+        res.status(200).json(
+            {
+                message: 'Doctor Profile fetched successfully !',
+                success: true,
+                doctor: isDoctorExists
+            }
+        );
+
 
     } catch (error) {
         console.log('Server error from get doctor profile', error);
