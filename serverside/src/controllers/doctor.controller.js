@@ -139,7 +139,7 @@ export const updateDoctor = async (req, res) => {
                 $set: updateDoctor
             },
             {
-                new: true, 
+                new: true,
                 runValidators: true
             })
             .select(' -password -__v')
@@ -179,6 +179,37 @@ export const updateDoctor = async (req, res) => {
 
 export const deleteDoctor = async (req, res) => {
     try {
+
+        const isDoctorExists = await Doctor.findOneAndUpdate(
+            { _id: req.user.id, isDeleted: false },
+            {
+                $set: {
+                    isDeleted: true,
+                    isActive: false
+                }
+            },
+            {
+                new: true
+            }).select('-password -__v');
+
+        if (!isDoctorExists) {
+            return res.status(404).json(
+                {
+                    message: 'Doctor not found',
+                    success: false
+                }
+            )
+        }
+
+        res.status(200).json(
+            {
+                message: 'Doctor Profile Deleted Successfully!',
+                success: true,
+                doctor: {
+                    id: isDoctorExists._id,
+                }
+            }
+        )
 
     } catch (error) {
         console.log('Server error from delete doctor', error);
