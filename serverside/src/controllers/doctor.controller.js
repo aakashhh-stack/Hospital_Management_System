@@ -72,7 +72,7 @@ export const loginDoctor = async (req, res) => {
             )
         }
 
-        const isMatch = await bcrypt.compare( password,isExists.password);
+        const isMatch = await bcrypt.compare(password, isExists.password);
 
         if (!isMatch) {
             return res.status(401).json(
@@ -120,6 +120,47 @@ export const loginDoctor = async (req, res) => {
 export const updateDoctor = async (req, res) => {
     try {
 
+        const updateDoctor = { ...req.body };
+
+        if (Object.keys(updateDoctor).length === 0) {
+
+            return res.status(400).json({
+                message: 'No valid fields provided for update',
+                success: false
+            });
+        }
+
+        const isDoctorExists = await Doctor.findOneAndUpdate(
+            {
+                _id: req.user.id,
+                isDeleted: false
+            },
+            {
+                $set: updateDoctor
+            },
+            {
+                new: true, 
+                runValidators: true
+            })
+            .select(' -password -__v')
+
+
+        if (!isDoctorExists) {
+            return res.status(404).json(
+                {
+                    message: 'Doctor not found',
+                    success: false
+                }
+            )
+        }
+
+        res.status(200).json(
+            {
+                message: 'Doctor profile updated successfully !',
+                success: true,
+                doctor: isDoctorExists
+            }
+        );
 
 
     } catch (error) {
@@ -138,7 +179,6 @@ export const updateDoctor = async (req, res) => {
 
 export const deleteDoctor = async (req, res) => {
     try {
-
 
     } catch (error) {
         console.log('Server error from delete doctor', error);
