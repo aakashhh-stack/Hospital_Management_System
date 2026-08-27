@@ -1,5 +1,3 @@
-import { date, required } from "joi";
-import { Timestamp } from "mongodb";
 import mongoose from "mongoose";
 
 const appointmentSchema = mongoose.Schema({
@@ -32,4 +30,4 @@ const appointmentSchema = mongoose.Schema({
 
 const Appointment = mongoose.model('Appointment', appointmentSchema);
 
-export default Appointment;
+export default Appointment
