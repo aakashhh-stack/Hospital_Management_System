@@ -6,20 +6,20 @@ export const createAppointment = async (req, res) => {
 
         const { doctor, appointmentDate, reason } = req.body;
 
-        const isDoctorAvailable = await Doctor.findOne(
+        const doctorExists = await Doctor.findOne(
 
             { _id: doctor, isDeleted: false, isActive: true }
 
-        ).select('name  isAvailable -__v _id');
+        ).select('isAvailable _id');
 
-        if (!isDoctorAvailable) {
+        if (!doctorExists) {
             return res.status(404).json({
                 message: 'Doctor not found',
                 success: false
             });
         }
 
-        if (!isDoctorAvailable.isAvailable) {
+        if (!doctorExists.isAvailable) {
 
             return res.status(409).json(
                 {
@@ -29,9 +29,26 @@ export const createAppointment = async (req, res) => {
             );
         }
 
+        const appointmentExists = await Appointment.findOne({
+            doctor,
+            appointmentDate,
+            status: { $nin: ['cancelled', 'completed'] }
+        });
+
+        if (appointmentExists) {
+
+            return res.status(409).json(
+                {
+                    message: 'Doctor already has an appointment at this time.',
+                    success: false
+                }
+            );
+        }
+
+
         const newAppointment = await Appointment.create({
             patient: req.user.id,
-            doctor: isDoctorAvailable._id,
+            doctor: doctorExists._id,
             appointmentDate,
             reason
         });
