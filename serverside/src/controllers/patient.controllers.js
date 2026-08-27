@@ -1,6 +1,7 @@
 // import express from 'express'
 
 import Patient from "../models/patient.models.js";
+import Appointment from "../models/appointment.model.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -210,5 +211,37 @@ export const deletePatientProfile = async (req, res) => {
         res.status(200).json({ message: 'User deleted successfully !', success: true, user: deleteUser._id });
     } catch (err) {
         return res.status(500).json({ message: `Server error from  delete patient profile :${err.message}`, success: false });
+    }
+}
+
+// -------------------------- Patient Appointments --------------------------------
+
+export const myAppointments = async (req, res) => {
+    try {
+        const appointments = await Appointment.find(
+            { patient: req.user.id }
+        ).populate('doctor', 'name consultationFee specialization ');
+
+        if (appointments.length === 0) {
+            return res.status(404).json({
+                message: 'You do not have any appointments yet !',
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'Appointments fetched successfully!',
+            success: true,
+            appointment: appointments
+        });
+
+    } catch (error) {
+        console.log("Server error from patient myappointment controller:", error);
+        return res.status(500).json(
+            {
+                message: `Server error :${err.message}`
+                , success: false
+            });
+
     }
 }
