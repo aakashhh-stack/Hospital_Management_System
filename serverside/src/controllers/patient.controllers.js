@@ -218,11 +218,11 @@ export const deletePatientProfile = async (req, res) => {
 
 export const myAppointments = async (req, res) => {
     try {
-        const appointments = await Appointment.find(
+        const appointments  = await Appointment.find(
             { patient: req.user.id }
         ).populate('doctor', 'name consultationFee specialization ');
 
-        if (appointments.length === 0) {
+        if (appointments .length === 0) {
             return res.status(404).json({
                 message: 'You do not have any appointments yet !',
                 success: false
@@ -232,15 +232,15 @@ export const myAppointments = async (req, res) => {
         res.status(200).json({
             message: 'Appointments fetched successfully!',
             success: true,
-            appointment: appointments
+            appointment: appointments 
         });
 
     } catch (error) {
         console.log("Server error from patient myappointment controller:", error);
         return res.status(500).json(
             {
-                message: `Server error :${err.message}`
-                , success: false
+                message: `Server error :${err.message}`,
+                success: false
             });
 
     }
