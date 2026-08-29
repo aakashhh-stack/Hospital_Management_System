@@ -263,3 +263,35 @@ export const getDoctorProfile = async (req, res) => {
         );
     }
 }
+
+export const doctorAppointments = async (req, res) => {
+    try {
+
+        const doctor = await Appointment.find(
+            { doctor: req.user.id })
+            .populate('patient', 'name phone')
+            .select('patient appointmentDate status reason');
+
+        if (doctor.length === 0) {
+            return res.status(404).json({
+                message: 'No appointments found for this doctor',
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'Doctor appointments fetched successfully!',
+            success: true,
+            data: doctor
+        });
+
+    } catch (error) {
+        console.log('Server error from doctor appointments', error);
+        return res.status(500).json(
+            {
+                message: `Server error: ${error.message}`,
+                success: false
+            }
+        );
+    }
+}
