@@ -76,3 +76,44 @@ export const createAppointment = async (req, res) => {
         );
     }
 }
+
+export const updateAppointmentStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        
+        const appointment = await Appointment.findByIdAndUpdate(
+            {
+                _id: req.params.appointmentId,
+                doctor: req.user.id
+            },
+            { $set: { status } },
+            {
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!appointment) {
+            return res.status(404).json({
+                message: 'Appointment not found',
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'Appointment status updated successfully',
+            success: true,
+            data: appointment
+        });
+
+    } catch (error) {
+        console.log('Server Error from updateAppointmentStatus', error);
+        res.status(500).json(
+            {
+                message: 'Server Error',
+                error,
+                success: false
+            }
+        );
+    }
+}
