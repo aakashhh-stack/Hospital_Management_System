@@ -1,4 +1,5 @@
 import Doctor from '../models/doctor.model.js';
+import Appointment from '../models/appointment.model.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
@@ -289,7 +290,35 @@ export const doctorAppointments = async (req, res) => {
         console.log('Server error from doctor appointments', error);
         return res.status(500).json(
             {
-                message: `Server error: ${error.message}`,
+                message: `Server error: ${error.message}!`,
+                success: false
+            }
+        );
+    }
+}
+
+export const getAllDoctors = async (req, res) => {
+    try {
+        const doctors = await Doctor.find().select('-password -__v');
+
+        if (doctors.length === 0) {
+            return res.status(404).json({
+                message: 'No doctors found',
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'All doctors fetched successfully!',
+            success: true,
+            data: doctors
+        });
+
+    } catch (error) {
+        console.log('Server error from get all doctors', error);
+        return res.status(500).json(
+            {
+                message: `Server error: ${error.message}!`,
                 success: false
             }
         );
