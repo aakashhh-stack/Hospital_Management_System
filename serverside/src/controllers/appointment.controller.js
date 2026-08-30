@@ -80,17 +80,13 @@ export const createAppointment = async (req, res) => {
 export const updateAppointmentStatus = async (req, res) => {
     try {
         const { status } = req.body;
-        
-        const appointment = await Appointment.findByIdAndUpdate(
+
+        const appointment = await Appointment.findOne(
             {
                 _id: req.params.appointmentId,
                 doctor: req.user.id
-            },
-            { $set: { status } },
-            {
-                new: true,
-                runValidators: true
             }
+
         );
 
         if (!appointment) {
@@ -99,6 +95,37 @@ export const updateAppointmentStatus = async (req, res) => {
                 success: false
             });
         }
+
+
+        const appointmentUpdate = {
+            pending: ['confirmed', 'cancelled'],
+            confirmed: ['completed', 'cancelled']
+        }
+
+        if (!appointmentUpdate[appointment.status]?.includes(status)) {
+            return res.status(400).json({
+                message: `Invalid status transition from ${appointment.status} to ${status}`,
+                success: false
+            })
+        }
+
+
+        // if (appointment.status === 'completed' || appointment.status === 'cancelled') {
+        //     return res.status(400).json({
+        //         message: 'Cannot update status of a completed or cancelled appointment',
+        //         success: false
+        //     });
+        // }
+        // if (appointment.status === 'pending' && status === 'completed') {
+        //     return res.status(400).json(
+        //         {
+        //             message: 'Cannot mark a pending appointment as completed. It must be confirmed first.',
+        //             success: false
+        //         })
+        // }
+
+        appointment.status = status;
+        await appointment.save();
 
         res.status(200).json({
             message: 'Appointment status updated successfully',
