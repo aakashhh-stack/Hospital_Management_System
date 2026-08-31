@@ -10,7 +10,7 @@ export const doctorRegistrationSchema = Joi.object({
     shift: Joi.string().required().valid('Morning', 'Afternoon', 'Night'),
 
 });
- 
+
 export const doctorLoginSchema = Joi.object({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8).max(12),
@@ -25,3 +25,7 @@ export const doctorUpdateSchema = Joi.object({
     shift: Joi.string().valid('Morning', 'Afternoon', 'Night'),
     isAvailable: Joi.boolean()
 }).min(1);
+
+export const doctorStatusUpdateSchema = Joi.object({
+    isActive: Joi.boolean().required().valid(true, false)
+});
