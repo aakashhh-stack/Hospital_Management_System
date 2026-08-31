@@ -249,7 +249,7 @@ export const myAppointments = async (req, res) => {
 export const getAllPatients = async (req, res) => {
     try {
         const patients = await Patient.find().select('-password -__v');
-        
+
         if (patients.length === 0) {
             return res.status(404).json({
                 message: 'No patients found !',
@@ -264,6 +264,43 @@ export const getAllPatients = async (req, res) => {
 
     } catch (error) {
         console.log("Server error from admin get all patients controller:", error);
+        return res.status(500).json(
+            {
+                message: `Server error :${error.message}`,
+                success: false
+            });
+    }
+}
+
+export const adminUpdatePatientStatus = async (req, res) => {
+    try {
+        const { isActive } = req.body;
+        const { patientId } = req.params;
+
+        const patient = await Patient.findOneAndUpdate({ _id: patientId },
+            {
+                $set: { isActive: isActive }
+            },
+            {
+                new: true, runValidators: true
+            }
+        );
+
+        if (!patient) {
+            return res.status(404).json({
+                message: 'Patient not found !',
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'Patient status updated successfully!',
+            success: true,
+            patient: patient
+        });
+
+    } catch (error) {
+        console.log("Server error from admin get patient by id controller:", error);
         return res.status(500).json(
             {
                 message: `Server error :${error.message}`,
