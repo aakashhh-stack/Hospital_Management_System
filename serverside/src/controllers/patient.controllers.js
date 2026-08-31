@@ -218,11 +218,11 @@ export const deletePatientProfile = async (req, res) => {
 
 export const myAppointments = async (req, res) => {
     try {
-        const appointments  = await Appointment.find(
+        const appointments = await Appointment.find(
             { patient: req.user.id }
         ).populate('doctor', 'name consultationFee specialization ');
 
-        if (appointments .length === 0) {
+        if (appointments.length === 0) {
             return res.status(404).json({
                 message: 'You do not have any appointments yet !',
                 success: false
@@ -232,7 +232,7 @@ export const myAppointments = async (req, res) => {
         res.status(200).json({
             message: 'Appointments fetched successfully!',
             success: true,
-            appointment: appointments 
+            appointment: appointments
         });
 
     } catch (error) {
@@ -243,5 +243,31 @@ export const myAppointments = async (req, res) => {
                 success: false
             });
 
+    }
+}
+
+export const getAllPatients = async (req, res) => {
+    try {
+        const patients = await Patient.find().select('-password -__v');
+        
+        if (patients.length === 0) {
+            return res.status(404).json({
+                message: 'No patients found !',
+                success: false
+            });
+        }
+        res.status(200).json({
+            message: 'Patients fetched successfully!',
+            success: true,
+            patients: patients
+        });
+
+    } catch (error) {
+        console.log("Server error from admin get all patients controller:", error);
+        return res.status(500).json(
+            {
+                message: `Server error :${error.message}`,
+                success: false
+            });
     }
 }
