@@ -7,7 +7,7 @@ import isAuthorized from '../middleware/role.middleware.js';
 import {
     createDoctor, loginDoctor, updateDoctor,
     getDoctorProfile, deleteDoctor, doctorAppointments,
-    getAllDoctors, updateDoctorStatus, deleteDoctorByAdmin
+    getAllDoctors, updateDoctorStatus, deleteDoctorByAdmin, restoreDoctorByAdmin
 } from '../controllers/doctor.controller.js';
 
 // doctor validations
@@ -56,5 +56,8 @@ router.patch('/admin/doctor/:doctorId/status', isAuth,
 router.patch('/admin/doctor/:doctorId/delete', isAuth,
     isAuthorized('admin'), deleteDoctorByAdmin);
 
+//  ----------------------------- admin restore doctor profile --------------------------------
+router.patch('/admin/doctor/:doctorId/restore', isAuth,
+    isAuthorized('admin'), restoreDoctorByAdmin);
 
 export default router;
