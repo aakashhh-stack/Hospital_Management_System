@@ -373,7 +373,7 @@ export const deleteDoctorByAdmin = async (req, res) => {
             {
                 _id: doctorId, isDeleted: false,
             },
-            { $set: { isDeleted: true, isActive: false,isAvailable: false } },
+            { $set: { isDeleted: true, isActive: false, isAvailable: false } },
             {
                 new: true,
                 runValidators: true
@@ -395,6 +395,45 @@ export const deleteDoctorByAdmin = async (req, res) => {
 
     } catch (error) {
         console.log('Server error from delete admin doctor profile', error);
+        return res.status(500).json(
+            {
+                message: `Server error: ${error.message}!`,
+                success: false
+            }
+        );
+    }
+}
+
+export const restoreDoctorByAdmin = async (req, res) => {
+    try {
+
+        const { doctorId } = req.params;
+        const doctor = await Doctor.findOneAndUpdate(
+            {
+                _id: doctorId, isDeleted: true
+            },
+            {
+                $set: { isDeleted: false, isActive: true }
+            }, {
+            new: true,
+            runValidators: true
+        }).select('-password -__v');
+
+        if (!doctor) {
+            return res.status(404).json({
+                message: 'Doctor not found',
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'Doctor profile restored successfully !',
+            success: true,
+            doctor
+        });
+
+    } catch (error) {
+        console.log('Server error from restore admin doctor profile', error);
         return res.status(500).json(
             {
                 message: `Server error: ${error.message}!`,
