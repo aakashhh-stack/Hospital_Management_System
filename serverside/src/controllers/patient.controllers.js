@@ -277,14 +277,14 @@ export const adminUpdatePatientStatus = async (req, res) => {
         const { isActive } = req.body;
         const { patientId } = req.params;
 
-        const patient = await Patient.findOneAndUpdate({ _id: patientId },
+        const patient = await Patient.findOneAndUpdate({ _id: patientId, isDeleted: false },
             {
                 $set: { isActive: isActive }
             },
             {
                 new: true, runValidators: true
             }
-        );
+        ).select('-password -__v');
 
         if (!patient) {
             return res.status(404).json({
