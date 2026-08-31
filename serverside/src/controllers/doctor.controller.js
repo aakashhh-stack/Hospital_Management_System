@@ -265,6 +265,7 @@ export const getDoctorProfile = async (req, res) => {
     }
 }
 
+// ------------------------ Get Doctor appointments ------------------------------
 export const doctorAppointments = async (req, res) => {
     try {
 
@@ -297,6 +298,7 @@ export const doctorAppointments = async (req, res) => {
     }
 }
 
+// ------------------------ Admin Get All Doctors ------------------------------
 export const getAllDoctors = async (req, res) => {
     try {
         const doctors = await Doctor.find().select('-password -__v');
@@ -325,6 +327,7 @@ export const getAllDoctors = async (req, res) => {
     }
 }
 
+// ------------------------Admin Update Doctor Status ------------------------------
 export const updateDoctorStatus = async (req, res) => {
     try {
         const { doctorId } = req.params;
@@ -365,6 +368,7 @@ export const updateDoctorStatus = async (req, res) => {
     }
 }
 
+// ------------------------ Admin Delete Doctor Profile ------------------------------
 export const deleteDoctorByAdmin = async (req, res) => {
     try {
         const { doctorId } = req.params;
@@ -404,6 +408,7 @@ export const deleteDoctorByAdmin = async (req, res) => {
     }
 }
 
+// ------------------------ Admin Restore Doctor Profile ------------------------------
 export const restoreDoctorByAdmin = async (req, res) => {
     try {
 
