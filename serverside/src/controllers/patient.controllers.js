@@ -308,3 +308,38 @@ export const adminUpdatePatientStatus = async (req, res) => {
             });
     }
 }
+export const deletePatientByAdmin = async (req, res) => {
+    try {
+
+        const { patientId } = req.params;
+
+        const patient = await Patient.findOneAndUpdate(
+            { _id: patientId, isDeleted: false },
+            { $set: { isDeleted: true, isActive: false } },
+            { new: true ,
+                runValidators: true
+            }
+        ).select('-password -__v');
+
+        if (!patient) {
+            return res.status(404).json({
+                message: 'Patient not found or already deleted !',
+                success: false
+            });
+        }
+        
+        res.status(200).json({
+            message: 'Patient deleted successfully!',
+            success: true,
+            patient: patient._id
+        });
+
+    } catch (error) {
+        console.log("Server error from admin delete patient by id controller:", error);
+        return res.status(500).json(
+            {
+                message: `Server error :${error.message}`,
+                success: false
+            });
+    }
+}
