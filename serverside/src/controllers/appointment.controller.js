@@ -1,6 +1,7 @@
 import Doctor from "../models/doctor.model.js";
 import Appointment from "../models/appointment.model.js";
 
+//------------------- Create Appointment -------------------
 export const createAppointment = async (req, res) => {
     try {
 
@@ -76,6 +77,7 @@ export const createAppointment = async (req, res) => {
     }
 }
 
+//------------------- Doctor Update Appointment Status -------------------
 export const updateAppointmentStatus = async (req, res) => {
     try {
         const { status } = req.body;
@@ -105,7 +107,7 @@ export const updateAppointmentStatus = async (req, res) => {
             return res.status(400).json({
                 message: `Invalid status transition from ${appointment.status} to ${status}`,
                 success: false
-            })
+            });
         }
 
 
@@ -143,6 +145,7 @@ export const updateAppointmentStatus = async (req, res) => {
     }
 }
 
+//------------------- Admin Get All Appointments By Admin -------------------
 export const getAllAppointmentsByAdmin = async (req, res) => {
     try {
         const appointments = await Appointment.find()
@@ -166,6 +169,59 @@ export const getAllAppointmentsByAdmin = async (req, res) => {
 
     } catch (error) {
         console.log('Server Error from getAllAppointmentsByAdmin', error);
+        return res.status(500).json(
+            {
+                message: `Server Error: ${error.message}`,
+                success: false
+            }
+        );
+    }
+}
+
+//------------------- Admin Update Appointment Status -------------------
+export const updateAppointmentStatusByAdmin = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const appointment = await Appointment.findOne(
+            { _id: req.params.appointmentId }
+        ).populate('patient', 'name email')
+            .populate('doctor', 'name email specialization experience consultationFee')
+            .select('-__v');
+
+        // Check if appointment exists
+        if (!appointment) {
+            return res.status(404).json({
+                message: 'Appointment not found',
+                success: false
+            });
+        }
+
+        // Validate status transition
+        const validStatuses = {
+            pending: ['confirmed', 'cancelled'],
+            confirmed: ['completed', 'cancelled']
+        };
+        
+        // Check if the new status is valid for the current status
+        if (!validStatuses[appointment.status]?.includes(status)) {
+            return res.status(400).json({
+                message: `Invalid status transition from ${appointment.status} to ${status}`,
+                success: false
+            });
+        }
+
+        // Update the appointment status
+        appointment.status = status;
+        await appointment.save();
+
+        return res.status(200).json({
+            message: 'Appointment status updated successfully by admin',
+            success: true,
+            data: appointment
+        });
+
+    } catch (error) {
+        console.log('Server Error from updateAppointmentStatusByAdmin', error);
         return res.status(500).json(
             {
                 message: `Server Error: ${error.message}`,
