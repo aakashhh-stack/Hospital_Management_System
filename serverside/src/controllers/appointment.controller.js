@@ -67,10 +67,9 @@ export const createAppointment = async (req, res) => {
 
     } catch (error) {
         console.log('Server Error from createAppointment', error);
-        res.status(500).json(
+        return res.status(500).json(
             {
-                message: 'Server Error',
-                error,
+                message: `Server Error: ${error.message}`,
                 success: false
             }
         );
@@ -127,7 +126,7 @@ export const updateAppointmentStatus = async (req, res) => {
         appointment.status = status;
         await appointment.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             message: 'Appointment status updated successfully',
             success: true,
             data: appointment
@@ -135,10 +134,41 @@ export const updateAppointmentStatus = async (req, res) => {
 
     } catch (error) {
         console.log('Server Error from updateAppointmentStatus', error);
-        res.status(500).json(
+        return res.status(500).json(
             {
-                message: 'Server Error',
-                error,
+                message: `Server Error: ${error.message}`,
+                success: false
+            }
+        );
+    }
+}
+
+export const getAllAppointmentsByAdmin = async (req, res) => {
+    try {
+        const appointments = await Appointment.find()
+            .populate('patient', 'name email')
+            .populate('doctor', 'name email specialization experience consultationFee')
+            .select('-__v');
+
+        // Check if appointments array is empty
+        if (appointments.length === 0) {
+            return res.status(404).json({
+                message: 'No appointments found',
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Appointments fetched successfully',
+            success: true,
+            data: appointments
+        });
+
+    } catch (error) {
+        console.log('Server Error from getAllAppointmentsByAdmin', error);
+        return res.status(500).json(
+            {
+                message: `Server Error: ${error.message}`,
                 success: false
             }
         );
