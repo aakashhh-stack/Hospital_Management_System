@@ -1,9 +1,22 @@
 import express from 'express';
-import { createAppointment, updateAppointmentStatus } from '../controllers/appointment.controller.js';
 import isAuth from '../middleware/isAuth.js';
 import isAuthorized from '../middleware/role.middleware.js';
 import isValid from '../middleware/validate.middleware.js';
-import { appointmentValidation, updateAppointmentStatusValidation } from '../validations/appointments.validation.js';
+
+//------------------- Appointment Controller -------------------
+import {
+    createAppointment, updateAppointmentStatus,
+    getAllAppointmentsByAdmin, updateAppointmentStatusByAdmin
+}
+    from '../controllers/appointment.controller.js';
+
+//------------------- Appointment Validation -------------------
+import {
+    appointmentValidation,
+    updateAppointmentStatusValidation
+}
+    from '../validations/appointments.validation.js';
+
 const router = express.Router();
 
 //------------------- Appointment routes -------------------
@@ -21,10 +34,16 @@ router.patch('/appointment/:appointmentId/status',
     updateAppointmentStatus);
 
 // ------------------- Admin Get All Appointments -------------------
+
 router.get('/admin/appointments',
     isAuth,
     isAuthorized('admin'),
     getAllAppointmentsByAdmin
 );
+
+// ------------------- Admin Update Appointment Status -------------------
+router.patch('/admin/appointment/:appointmentId/status', isAuth,
+    isAuthorized('admin'), isValid(updateAppointmentStatusValidation)
+    , updateAppointmentStatusByAdmin);
 
 export default router;
