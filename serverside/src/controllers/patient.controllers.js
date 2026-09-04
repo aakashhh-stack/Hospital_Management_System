@@ -316,7 +316,8 @@ export const deletePatientByAdmin = async (req, res) => {
         const patient = await Patient.findOneAndUpdate(
             { _id: patientId, isDeleted: false },
             { $set: { isDeleted: true, isActive: false } },
-            { new: true ,
+            {
+                new: true,
                 runValidators: true
             }
         ).select('-password -__v');
@@ -327,7 +328,7 @@ export const deletePatientByAdmin = async (req, res) => {
                 success: false
             });
         }
-        
+
         res.status(200).json({
             message: 'Patient deleted successfully!',
             success: true,
@@ -343,3 +344,37 @@ export const deletePatientByAdmin = async (req, res) => {
             });
     }
 }
+
+export const restorePatientByAdmin = async (req, res) => {
+    try {
+
+        const patient = await Pateint.findOneAndUpdate(
+            { _id: req.params.patientId, isDeleted: true },
+            { $set: { isDeleted: false, isActive: true } },
+            { new: true, runValidators: true }
+        ).select('-password -__v');
+
+        if (!patient) {
+            return res.status(404).json({
+                message: 'Patient not found or not deleted !',
+                success: false
+            });
+        }
+
+        res.status(200).json({
+            message: 'Patient restored successfully!',
+            success: true,
+            patient: patient
+        });
+
+
+    } catch (error) {
+        console.log("Server error from admin restore patient by id controller:", error);
+        return res.status(500).json(
+            {
+                message: `Server error :${error.message}`,
+                success: false
+            });
+    }
+}
+
