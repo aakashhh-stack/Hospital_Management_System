@@ -348,7 +348,7 @@ export const deletePatientByAdmin = async (req, res) => {
 export const restorePatientByAdmin = async (req, res) => {
     try {
 
-        const patient = await Pateint.findOneAndUpdate(
+        const patient = await Patient.findOneAndUpdate(
             { _id: req.params.patientId, isDeleted: true },
             { $set: { isDeleted: false, isActive: true } },
             { new: true, runValidators: true }
