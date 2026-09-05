@@ -26,4 +26,8 @@ export const updatePatientSchema = Joi.object(
         phone: Joi.string().required().pattern(/^[0-9]{10}$/),
 
     }
-).min(1)
+).min(1);
+
+export const patientStatusUpdateSchema = Joi.object({
+    isActive: Joi.boolean().required()
+});
