@@ -201,7 +201,7 @@ export const updateAppointmentStatusByAdmin = async (req, res) => {
             pending: ['confirmed', 'cancelled'],
             confirmed: ['completed', 'cancelled']
         };
-        
+
         // Check if the new status is valid for the current status
         if (!validStatuses[appointment.status]?.includes(status)) {
             return res.status(400).json({
@@ -228,5 +228,37 @@ export const updateAppointmentStatusByAdmin = async (req, res) => {
                 success: false
             }
         );
+    }
+}
+
+// ------------------- Admin Delete Appointment -------------------
+export const deleteAppointmentByAdmin = async (req, res) => {
+    try {
+
+        const appointment = await Appointment.findOneAndUpdate(
+            { _id: req.params.appointmentId, isDeleted: false },
+            { $set: { isDeleted: true } },
+            { new: true, runValidators: true }
+        ).select('-__v');
+
+        if (!appointment) {
+            return res.status(404).json({
+                message: 'Appointment not found',
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Appointment deleted successfully by admin',
+            success: true,
+            data: appointment
+        });
+
+    } catch (error) {
+        console.log('Server Error from deleteAppointmentByAdmin', error);
+        return res.status(500).json({
+            message: `Server Error: ${error.message}`,
+            success: false
+        })
     }
 }
