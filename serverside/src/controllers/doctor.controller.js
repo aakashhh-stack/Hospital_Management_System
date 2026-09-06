@@ -447,3 +447,46 @@ export const restoreDoctorByAdmin = async (req, res) => {
         );
     }
 }
+
+export const updateDoctorAvailability = async (req, res) => {
+    try {
+        const { isAvailable } = req.body;
+        const doctor = await Doctor.findOneAndUpdate(
+            
+            {
+                _id: req.user.id,
+                isDeleted: false,
+                isActive: true
+            },
+            {
+                $set: {
+                    isAvailable: isAvailable
+                }
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        ).select('isAvailable');
+
+        if (!doctor) {
+            return res.status(404).json({
+                message: 'Doctor not found',
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Doctor availability updated successfully!',
+            success: true,
+            isAvailable: doctor.isAvailable
+        });
+    } catch (error) {
+        console.log('Server error from doctor availability:', error);
+
+        return res.status(500).json({
+            message: `Server error: ${error.message}`,
+            success: false
+        });
+    }
+};
