@@ -8,12 +8,14 @@ import {
     createDoctor, loginDoctor, updateDoctor,
     getDoctorProfile, deleteDoctor, doctorAppointments,
     getAllDoctors, updateDoctorStatus, deleteDoctorByAdmin, restoreDoctorByAdmin
+    , updateDoctorAvailability
 } from '../controllers/doctor.controller.js';
 
 // doctor validations
 import {
     doctorRegistrationSchema, doctorLoginSchema,
-    doctorUpdateSchema, doctorStatusUpdateSchema
+    doctorUpdateSchema, doctorStatusUpdateSchema,
+    doctorAvailabilitySchema
 } from '../validations/doctor.validation.js';
 
 // create router
@@ -41,6 +43,9 @@ router.delete('/doctor/profile', isAuth, isAuthorized('doctor'), deleteDoctor);
 //  ----------------------------- get doctor appointments --------------------------------
 router.get('/doctor/appointments', isAuth, isAuthorized('doctor'), doctorAppointments);
 
+//  ----------------------------- get doctor availability --------------------------------
+router.patch('/doctor/availability', isAuth, isAuthorized('doctor'), isValid(doctorAvailabilitySchema), updateDoctorAvailability);
+
 
 // ---------------------------- admin doctor routes -----------------------------
 
@@ -52,7 +57,7 @@ router.get('/admin/doctor', isAuth, isAuthorized('admin'), getAllDoctors);
 router.patch('/admin/doctor/:doctorId/status', isAuth,
     isAuthorized('admin'), isValid(doctorStatusUpdateSchema), updateDoctorStatus);
 
- //  ----------------------------- admin delete doctor profile --------------------------------   
+//  ----------------------------- admin delete doctor profile --------------------------------   
 router.patch('/admin/doctor/:doctorId/delete', isAuth,
     isAuthorized('admin'), deleteDoctorByAdmin);
 
