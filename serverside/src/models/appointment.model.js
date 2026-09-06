@@ -24,6 +24,10 @@ const appointmentSchema = mongoose.Schema({
         type: String,
         required: true,
         maxLength: [35, 'Maximum 35 characters are allowed']
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 
 }, { timestamps: true });
