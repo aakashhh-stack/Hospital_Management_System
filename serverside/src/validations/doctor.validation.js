@@ -29,3 +29,7 @@ export const doctorUpdateSchema = Joi.object({
 export const doctorStatusUpdateSchema = Joi.object({
     isActive: Joi.boolean().required().valid(true, false)
 });
+
+export const doctorAvailabilitySchema = Joi.object({
+    isAvailable: Joi.boolean().required()
+});
