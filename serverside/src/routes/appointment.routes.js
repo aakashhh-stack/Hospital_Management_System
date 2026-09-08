@@ -7,7 +7,7 @@ import isValid from '../middleware/validate.middleware.js';
 import {
     createAppointment, updateAppointmentStatus,
     getAllAppointmentsByAdmin, updateAppointmentStatusByAdmin,
-    deleteAppointmentByAdmin
+    deleteAppointmentByAdmin, restoreAppointmentByAdmin
 }
     from '../controllers/appointment.controller.js';
 
@@ -48,5 +48,12 @@ router.patch('/admin/appointment/:appointmentId/status', isAuth,
     , updateAppointmentStatusByAdmin);
 
 // ------------------- Admin Delete Appointment -------------------
-router.delete('/admin/appointment/:appointmentId',isAuth,isAuthorized('admin'),deleteAppointmentByAdmin);
+router.delete('/admin/appointment/:appointmentId',
+    isAuth, isAuthorized('admin'), deleteAppointmentByAdmin);
+
+//--------------------- Admin Restore Appointment -------------------
+router.patch('/admin/appointment/:appointmentId/restore',
+    isAuth, isAuthorized('admin'), restoreAppointmentByAdmin);
+
 export default router;
+
