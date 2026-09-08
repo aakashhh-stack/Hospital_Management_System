@@ -262,3 +262,34 @@ export const deleteAppointmentByAdmin = async (req, res) => {
         })
     }
 }
+
+export const restoreAppointmentByAdmin = async (req, res) => {
+    try {
+
+        const appointment = await Appointment.findOneAndUpdate(
+            { _id: req.params.appointmentId, isDeleted: true },
+            { $set: { isDeleted: false } },
+            { new: true, runValidators: true }
+        ).select('-__v');
+
+        if (!appointment) {
+            return res.status(404).json({
+                message: 'Appointment not found or not deleted',
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: 'Appointment restored successfully by admin',
+            success: true,
+            data: appointment
+        });
+
+    } catch (error) {
+        console.log('Server Error from restoreAppointmentByAdmin', error);
+        return res.status(500).json({
+            message: `Server Error: ${error.message}`,
+            success: false
+        });
+    }
+}
