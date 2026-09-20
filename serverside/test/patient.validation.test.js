@@ -129,6 +129,52 @@ test('should validate valid patient login data', () => {
 
 });
 
+test('should reject if email field is missing', () => {
+
+    const patientLogin = {
+        password: 'jestuser123'
+    };
+
+    const result = validateTestResult(loginPatientSchema, patientLogin);
+    expect(result.error).toBeDefined();
+
+});
+
+test('should reject if email is invalid', () => {
+
+    const patientLogin = {
+        email:'jestuser_gmail.com',
+        password: 'jestuser'
+    };
+
+    const result = validateTestResult(loginPatientSchema, patientLogin);
+    expect(result.error).toBeDefined();
+
+});
+test('should reject if password is less than 8 characters', () => {
+
+    const patientLogin = {
+        email:'jestuser@gmail.com',
+        password: 'jestus'
+    };
+
+    const result = validateTestResult(loginPatientSchema, patientLogin);
+    expect(result.error).toBeDefined();
+
+});
+
+test('should reject if password is greater than 12 characters', () => {
+
+    const patientLogin = {
+        email:'jestuser@gmail.com',
+        password: 'jestuser001002'
+    };
+
+    const result = validateTestResult(loginPatientSchema, patientLogin);
+    expect(result.error).toBeDefined();
+
+});
+
 // ------------------------- Test 3  --------------------------------
 
 test('should validate valid patient upadate schema', () => {
