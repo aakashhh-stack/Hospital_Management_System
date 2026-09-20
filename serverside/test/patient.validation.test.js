@@ -163,7 +163,7 @@ test('should reject if password is less than 8 characters', () => {
 
 });
 
-test('should reject if password is greater than 12 characters', () => {
+test('should reject if  password is greater than 12 characters', () => {
 
     const patientLogin = {
         email:'jestuser@gmail.com',
