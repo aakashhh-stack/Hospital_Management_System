@@ -24,8 +24,96 @@ test('should validate valid patient registration data', () => {
     expect(result.error).toBeUndefined();
     expect(result.value).toBeDefined();
 
+});
+
+test('should reject if password filed is missing', () => {
+    const pateintRegister = {
+        name: 'jest_user',
+        email: 'jestuser@gmail.com',
+        phone: '9876543211'
+    };
+
+    const result = validateTestResult(registerPatientSchema, pateintRegister);
+    expect(result.error).toBeDefined();
+});
+
+test('should reject if email is invalid', () => {
+    const pateintRegister = {
+        name: 'jest_user',
+        email: 'jestuser_gmail.com',
+        phone: '9876543211',
+        password: 'jestUser123'
+    };
+
+    const result = validateTestResult(registerPatientSchema, pateintRegister);
+    expect(result.error).toBeDefined();
+});
+
+test('should reject if password less than 8 character', () => {
+    const pateintRegister = {
+        name: 'jest_user',
+        email: 'jestuser@gmail.com',
+        phone: '9876543211',
+        password: 'jestUs'
+    };
+
+    const result = validateTestResult(registerPatientSchema, pateintRegister);
+    expect(result.error).toBeDefined();
+});
+
+test('should accept password with exactly 8 characters', () => {
+    const pateintRegister = {
+        name: 'jest_user',
+        email: 'jestuser@gmail.com',
+        phone: '9876543211',
+        password: 'jestuser'
+    };
+
+    const result = validateTestResult(registerPatientSchema, pateintRegister);
+    expect(result.error).toBeUndefined();
+});
+
+
+test('should reject if password greater than 12 character', () => {
+    const pateintRegister = {
+        name: 'jest_user',
+        email: 'jestuser@gmail.com',
+        phone: '9876543211',
+        password: 'jestUsser12456'
+    };
+
+    const result = validateTestResult(registerPatientSchema, pateintRegister);
+    expect(result.error).toBeDefined();
+});
+
+test('should reject if patient name is greater than 25 characters', () => {
+
+    const pateintRegister = {
+        name: 'bhanupratapsingh_heerathakurkebaap',
+        email: 'jestuser@gmail.com',
+        password: '12345678',
+        phone: '9876543211'
+    };
+
+    const result = validateTestResult(registerPatientSchema, pateintRegister)
+    expect(result.error).toBeDefined();
 
 });
+
+test('should reject if phone number is not 10 digits', () => {
+
+    const pateintRegister = {
+        name: 'jestUser',
+        email: 'jestuser@gmail.com',
+        password: '12345678',
+        phone: '98765432'
+    };
+
+    const result = validateTestResult(registerPatientSchema, pateintRegister)
+    expect(result.error).toBeDefined();
+
+});
+
 
 // ------------------------- Test 2 --------------------------------
 test('should validate valid patient login data', () => {
